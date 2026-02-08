@@ -27,7 +27,12 @@ CREATE TABLE IF NOT EXISTS sessions (
     alert_content TEXT NOT NULL,
     context_data JSON,
     analysis_result JSON,
+    status VARCHAR(50) DEFAULT 'pending',
+    messages JSON,
+    intent JSON,
+    current_stage VARCHAR(50),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -37,6 +42,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     handler_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     root_cause TEXT,
+    ai_analysis TEXT,
     level ENUM('P1', 'P2', 'P3') DEFAULT 'P3',
     status ENUM('new', 'processing', 'closed') DEFAULT 'new',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

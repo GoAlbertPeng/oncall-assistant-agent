@@ -19,20 +19,22 @@ ANALYSIS_PROMPT = """你是一位专业的SRE工程师，负责分析告警并�
 ## 相关指标
 {metrics_context}
 
-请分析以上信息，输出JSON格式的结果：
+请用中文分析以上信息，输出JSON格式的结果：
 {{
-    "root_cause": "简明描述问题根本原因",
-    "evidence": "引用具体日志或指标作为依据",
+    "root_cause": "用中文简明描述问题根本原因（2-3句话）",
+    "evidence": "用中文引用具体日志或指标作为依据",
     "category": "问题分类，可选值：code_issue(代码问题), config_issue(配置问题), resource_bottleneck(资源瓶颈), dependency_failure(依赖故障)",
-    "temporary_solution": "临时缓解方案",
-    "permanent_solution": "根本解决方案",
+    "temporary_solution": "用中文描述临时缓解方案（具体可执行的步骤）",
+    "permanent_solution": "用中文描述根本解决方案（长期改进建议）",
     "confidence": 0.0到1.0之间的置信度
 }}
 
-注意：
-1. 如果日志或指标信息不足，请在evidence中说明，并给出合理的推测
-2. category必须是以下之一：code_issue, config_issue, resource_bottleneck, dependency_failure
-3. 只输出JSON，不要有其他内容"""
+重要要求：
+1. 所有分析内容必须使用中文输出，不要使用英文
+2. 如果日志或指标信息不足，请在evidence中说明，并给出合理的推测
+3. category必须是以下之一：code_issue, config_issue, resource_bottleneck, dependency_failure
+4. 只输出JSON，不要有其他内容
+5. 回答要专业、具体、有针对性"""
 
 
 def _format_logs(logs: list) -> str:
@@ -106,10 +108,10 @@ async def _analyze_with_openai(
         # Return a mock result for testing
         return AnalysisResult(
             root_cause="API密钥未配置，无法进行分析",
-            evidence="请配置OPENAI_API_KEY环境变量",
+            evidence="请配置LLM API密钥环境变量",
             category="config_issue",
             temporary_solution="配置LLM API密钥",
-            permanent_solution="在.env文件中设置OPENAI_API_KEY",
+            permanent_solution="在docker-compose.yml中设置OPENAI_API_KEY",
             confidence=0.0,
         )
     
@@ -123,6 +125,7 @@ async def _analyze_with_openai(
         client = AsyncOpenAI(
             api_key=settings.openai_api_key,
             base_url=settings.openai_base_url,
+            timeout=120.0,  # 60 seconds timeout for Doubao model
         )
         
         response = await client.chat.completions.create(

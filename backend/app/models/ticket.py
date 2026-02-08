@@ -30,8 +30,9 @@ class Ticket(Base):
     handler_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String(255), nullable=False)
     root_cause = Column(Text, nullable=True)
-    level = Column(Enum(TicketLevel), default=TicketLevel.P3)
-    status = Column(Enum(TicketStatus), default=TicketStatus.NEW)
+    ai_analysis = Column(Text, nullable=True)  # AI分析结果
+    level = Column(Enum('P1', 'P2', 'P3', name='ticketlevel'), default='P3')
+    status = Column(Enum('new', 'processing', 'closed', name='ticketstatus'), default='new')
     created_at = Column(DateTime, default=datetime.utcnow)
     closed_at = Column(DateTime, nullable=True)
     

@@ -1,8 +1,12 @@
 """Ticket schemas."""
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Literal
 from pydantic import BaseModel
-from app.models.ticket import TicketLevel, TicketStatus
+
+
+# Use literal types to match database enum values
+TicketLevelType = Literal["P1", "P2", "P3"]
+TicketStatusType = Literal["new", "processing", "closed"]
 
 
 class TicketCreate(BaseModel):
@@ -10,15 +14,17 @@ class TicketCreate(BaseModel):
     session_id: Optional[int] = None
     title: str
     root_cause: Optional[str] = None
-    level: TicketLevel = TicketLevel.P3
+    ai_analysis: Optional[str] = None  # AI分析结果
+    level: TicketLevelType = "P3"
 
 
 class TicketUpdate(BaseModel):
     """Schema for updating a ticket."""
     title: Optional[str] = None
     root_cause: Optional[str] = None
-    level: Optional[TicketLevel] = None
-    status: Optional[TicketStatus] = None
+    ai_analysis: Optional[str] = None
+    level: Optional[TicketLevelType] = None
+    status: Optional[TicketStatusType] = None
 
 
 class TicketResponse(BaseModel):
@@ -28,8 +34,9 @@ class TicketResponse(BaseModel):
     handler_id: int
     title: str
     root_cause: Optional[str] = None
-    level: TicketLevel
-    status: TicketStatus
+    ai_analysis: Optional[str] = None
+    level: TicketLevelType
+    status: TicketStatusType
     created_at: datetime
     closed_at: Optional[datetime] = None
     

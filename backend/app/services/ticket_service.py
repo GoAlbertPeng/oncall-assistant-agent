@@ -1,9 +1,9 @@
 """Ticket service."""
 from datetime import datetime, date
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Literal
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, func, and_
-from app.models.ticket import Ticket, TicketStatus, TicketLevel
+from app.models.ticket import Ticket
 from app.schemas.ticket import TicketCreate, TicketUpdate
 
 
@@ -49,8 +49,9 @@ async def create_ticket(
         handler_id=handler_id,
         title=data.title,
         root_cause=data.root_cause,
+        ai_analysis=data.ai_analysis,
         level=data.level,
-        status=TicketStatus.NEW,
+        status="new",
     )
     db.add(ticket)
     await db.commit()
@@ -73,7 +74,7 @@ async def list_tickets(
     db: AsyncSession,
     page: int = 1,
     page_size: int = 20,
-    status_filter: Optional[TicketStatus] = None,
+    status_filter: Optional[Literal["new", "processing", "closed"]] = None,
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
 ) -> Tuple[List[Ticket], int]:
@@ -135,7 +136,7 @@ async def update_ticket(
         setattr(ticket, key, value)
     
     # If status changed to closed, set closed_at
-    if data.status == TicketStatus.CLOSED and ticket.closed_at is None:
+    if data.status == "closed" and ticket.closed_at is None:
         ticket.closed_at = datetime.utcnow()
     
     await db.commit()

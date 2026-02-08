@@ -6,6 +6,7 @@ import MainLayout from './components/MainLayout';
 import LoginPage from './pages/LoginPage';
 import AnalysisPage from './pages/AnalysisPage';
 import DataSourcesPage from './pages/DataSourcesPage';
+import TestDataPage from './pages/TestDataPage';
 import TicketsPage from './pages/TicketsPage';
 import TicketDetailPage from './pages/TicketDetailPage';
 
@@ -57,6 +58,7 @@ function App() {
           <Route index element={<Navigate to="/analysis" replace />} />
           <Route path="analysis" element={<AnalysisPage />} />
           <Route path="datasources" element={<DataSourcesPage />} />
+          <Route path="testdata" element={<TestDataPage />} />
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/:ticketNo" element={<TicketDetailPage />} />
         </Route>

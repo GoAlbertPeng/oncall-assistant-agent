@@ -19,7 +19,10 @@ class DataSource(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
-    type = Column(Enum(DataSourceType), nullable=False)
+    type = Column(
+        Enum(DataSourceType, values_callable=lambda x: [e.value for e in x]),
+        nullable=False
+    )
     host = Column(String(255), nullable=False)
     port = Column(Integer, nullable=False)
     auth_token = Column(String(500), nullable=True)

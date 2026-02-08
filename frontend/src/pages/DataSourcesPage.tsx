@@ -71,8 +71,18 @@ export default function DataSourcesPage() {
   const handleCreate = () => {
     setEditingId(null);
     form.resetFields();
-    form.setFieldsValue({ port: 9200, type: 'elk' });
+    form.setFieldsValue({ port: 9200, type: 'elk', host: '' });
     setModalOpen(true);
+  };
+
+  const handleTypeChange = (type: string) => {
+    if (type === 'elk') {
+      form.setFieldsValue({ port: 9200 });
+    } else if (type === 'prometheus') {
+      form.setFieldsValue({ port: 9090 });
+    } else if (type === 'loki') {
+      form.setFieldsValue({ port: 3100 });
+    }
   };
 
   const handleEdit = (record: DataSource) => {
@@ -272,7 +282,7 @@ export default function DataSourcesPage() {
             label="类型"
             rules={[{ required: true }]}
           >
-            <Select options={typeOptions} disabled={!!editingId} />
+            <Select options={typeOptions} disabled={!!editingId} onChange={handleTypeChange} />
           </Form.Item>
           <Form.Item
             name="host"

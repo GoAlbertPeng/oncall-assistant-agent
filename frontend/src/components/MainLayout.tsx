@@ -9,6 +9,7 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ExperimentOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '../stores/authStore';
 
@@ -24,6 +25,11 @@ const menuItems = [
     key: '/datasources',
     icon: <DatabaseOutlined />,
     label: '数据源管理',
+  },
+  {
+    key: '/testdata',
+    icon: <ExperimentOutlined />,
+    label: '测试数据',
   },
   {
     key: '/tickets',

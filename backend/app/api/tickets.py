@@ -1,12 +1,11 @@
 """Tickets API routes."""
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.api.auth import get_current_user
 from app.models.user import User
-from app.models.ticket import TicketStatus
 from app.schemas.ticket import (
     TicketCreate,
     TicketUpdate,
@@ -33,7 +32,7 @@ async def create_ticket(
 async def list_tickets(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
-    status_filter: Optional[TicketStatus] = Query(None, alias="status"),
+    status_filter: Optional[Literal["new", "processing", "closed"]] = Query(None, alias="status"),
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
     db: AsyncSession = Depends(get_db),

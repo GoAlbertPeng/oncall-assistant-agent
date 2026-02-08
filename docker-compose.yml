@@ -14,10 +14,14 @@ services:
     environment:
       - DATABASE_URL=mysql+aiomysql://oncall:oncall123@db:3306/oncall
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-super-secret-key-change-in-production}
-      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4}
-      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      # ByteDance Doubao LLM Configuration
+      - LLM_PROVIDER=openai
+      - OPENAI_API_KEY=08554a38-57c2-4e97-87a5-ddb1d7c15d4e
+      - OPENAI_MODEL=doubao-seed-1-6-251015
+      - OPENAI_BASE_URL=https://ark.cn-beijing.volces.com/api/v3/
+      # Test data sources
+      - TEST_PROMETHEUS_URL=http://prometheus:9090
+      - TEST_PUSHGATEWAY_URL=http://pushgateway:9091
     depends_on:
       db:
         condition: service_healthy
@@ -43,5 +47,31 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  # Note: Elasticsearch disabled due to high memory requirements (needs 512MB+)
+  # Test logs are stored in-memory, test metrics use real Prometheus
+
+  # Prometheus for test metrics data
+  prometheus:
+    image: m.daocloud.io/docker.io/prom/prometheus:v2.47.0
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver'
+      - '--web.enable-admin-api'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  # Pushgateway for pushing metrics to Prometheus
+  pushgateway:
+    image: m.daocloud.io/docker.io/prom/pushgateway:v1.6.2
+    ports:
+      - "9091:9091"
+    restart: unless-stopped
+
 volumes:
   mysql_data:
+  prometheus_data:

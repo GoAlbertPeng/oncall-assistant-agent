@@ -183,6 +183,23 @@ export default function TicketDetailPage() {
               {ticket.root_cause || '暂无'}
             </Paragraph>
           </Descriptions.Item>
+          {ticket.ai_analysis && (
+            <Descriptions.Item label="AI分析报告" span={2}>
+              <Paragraph style={{ 
+                margin: 0, 
+                whiteSpace: 'pre-wrap', 
+                fontFamily: 'monospace', 
+                fontSize: 12,
+                backgroundColor: '#f5f5f5',
+                padding: 12,
+                borderRadius: 4,
+                maxHeight: 400,
+                overflow: 'auto'
+              }}>
+                {ticket.ai_analysis}
+              </Paragraph>
+            </Descriptions.Item>
+          )}
         </Descriptions>
 
         {ticket.status !== 'closed' && (
