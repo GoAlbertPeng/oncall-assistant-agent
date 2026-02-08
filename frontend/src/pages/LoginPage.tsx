@@ -80,12 +80,6 @@ export default function LoginPage() {
             </Button>
           </Form.Item>
         </Form>
-        
-        <div style={{ textAlign: 'center' }}>
-          <Typography.Text type="secondary">
-            演示账号: admin@oncall.example.com / admin123
-          </Typography.Text>
-        </div>
       </Card>
     </div>
   );
