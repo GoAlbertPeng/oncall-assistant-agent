@@ -1,0 +1,14 @@
+# Docker Compose Environment Variables
+
+# JWT Secret Key (change this in production!)
+JWT_SECRET_KEY=your-super-secret-key-change-in-production
+
+# LLM Configuration
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your-openai-api-key
+OPENAI_MODEL=gpt-4
+OPENAI_BASE_URL=https://api.openai.com/v1
+
+# Alternative: Use local/custom API endpoint
+# OPENAI_BASE_URL=http://localhost:11434/v1
+# OPENAI_MODEL=llama2
